@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     q: 'Meus dados ficam salvos no site?',
-    a: 'Não. Todo o processamento acontece localmente no seu navegador. Nada é enviado para servidor algum, e ao fechar a página os dados somem.',
+    a: 'Não. O cálculo é feito no seu próprio navegador, e o seu arquivo nunca é enviado para nenhum servidor. Quando você fecha a página, os dados somem.',
   },
   {
     q: 'Posso carregar dados de mais de um arquivo?',

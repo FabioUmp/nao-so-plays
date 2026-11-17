@@ -13,44 +13,41 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ data, period }, 
   const topArtists = data.artists.slice(0, 5);
   const topTracks = data.tracks.slice(0, 5);
 
+  // Note: WebkitBackgroundClip/WebkitTextFillColor do not work inside html-to-image canvas.
+  // All gradient text is replaced with solid colours here.
   return (
     <div
       ref={ref}
       style={{
         width: 1080,
         height: 1920,
-        background: 'linear-gradient(160deg, #0d0a1a 0%, #070711 50%, #0a0714 100%)',
+        backgroundColor: '#070711',
         fontFamily: 'system-ui, -apple-system, sans-serif',
         color: '#f9fafb',
         display: 'flex',
         flexDirection: 'column',
         padding: '80px',
         boxSizing: 'border-box',
-        position: 'absolute',
-        left: -9999,
-        top: 0,
+        overflow: 'hidden',
       }}
     >
       {/* Header */}
       <div style={{ marginBottom: 60 }}>
         <p style={{ fontSize: 28, fontWeight: 800, letterSpacing: 4, textTransform: 'uppercase',
-          background: 'linear-gradient(90deg, #c084fc, #f472b6)', WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent', marginBottom: 8 }}>
+          color: '#c084fc', marginBottom: 8 }}>
           {RETRO_NAME}
         </p>
-        <p style={{ fontSize: 48, fontWeight: 900, lineHeight: 1.1, marginBottom: 12 }}>
+        <p style={{ fontSize: 48, fontWeight: 900, lineHeight: 1.1, marginBottom: 12, color: '#f9fafb' }}>
           Meu ano em música
         </p>
         <p style={{ fontSize: 28, color: '#9ca3af' }}>{period.label}</p>
       </div>
 
       {/* Total */}
-      <div style={{ background: 'rgba(168,85,247,0.15)', borderRadius: 24, padding: '40px 48px',
+      <div style={{ backgroundColor: 'rgba(168,85,247,0.15)', borderRadius: 24, padding: '40px 48px',
         marginBottom: 48, border: '1px solid rgba(168,85,247,0.3)' }}>
         <p style={{ fontSize: 24, color: '#c084fc', marginBottom: 8 }}>Tempo total ouvido</p>
-        <p style={{ fontSize: 96, fontWeight: 900, lineHeight: 1,
-          background: 'linear-gradient(90deg, #c084fc, #f472b6)', WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent' }}>
+        <p style={{ fontSize: 96, fontWeight: 900, lineHeight: 1, color: '#c084fc' }}>
           {totalHours}h
         </p>
       </div>
@@ -63,7 +60,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ data, period }, 
         </p>
         {topArtists.map((a, i) => (
           <div key={a.artistName} style={{ display: 'flex', alignItems: 'center', marginBottom: 20,
-            padding: '16px 24px', background: 'rgba(255,255,255,0.04)', borderRadius: 16 }}>
+            padding: '16px 24px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16 }}>
             <span style={{ fontSize: 36, fontWeight: 900, width: 60, color: i === 0 ? '#c084fc' : 'rgba(255,255,255,0.2)',
               textAlign: 'center' }}>
               {i + 1}
@@ -82,7 +79,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(({ data, period }, 
         </p>
         {topTracks.map((t, i) => (
           <div key={t.trackName} style={{ display: 'flex', alignItems: 'center', marginBottom: 20,
-            padding: '16px 24px', background: 'rgba(255,255,255,0.04)', borderRadius: 16 }}>
+            padding: '16px 24px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16 }}>
             <span style={{ fontSize: 36, fontWeight: 900, width: 60, color: i === 0 ? '#f472b6' : 'rgba(255,255,255,0.2)',
               textAlign: 'center' }}>
               {i + 1}

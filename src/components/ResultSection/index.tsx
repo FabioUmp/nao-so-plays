@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { toPng } from 'html-to-image';
 import { AggregatedData, Period, TopSize } from '../../types';
 import { combineMonths } from '../../aggregation/index';
@@ -51,13 +52,31 @@ export default function ResultSection({ appData }: ResultSectionProps) {
     if (!shareCardRef.current || exporting) return;
     setExporting(true);
     try {
-      const dataUrl = await toPng(shareCardRef.current, { pixelRatio: 1 });
+      // Wait for fonts to be ready
+      await document.fonts.ready;
+
+      // Wait two animation frames so the browser has painted the off-screen card
+      await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+
+      const dataUrl = await toPng(shareCardRef.current, {
+        backgroundColor: '#070711',
+        width: 1080,
+        height: 1920,
+        pixelRatio: 1,
+      });
+
+      // Guard against an empty/transparent capture (a valid 1080×1920 PNG is always > 5 kB)
+      if (dataUrl.length < 5000) {
+        throw new Error('A imagem gerada parece vazia. Tente novamente.');
+      }
+
       const link = document.createElement('a');
       link.download = `retrospectiva-${period.value}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
       console.error('Falha ao exportar imagem:', err);
+      alert(`Não foi possível gerar a imagem: ${err instanceof Error ? err.message : err}`);
     } finally {
       setExporting(false);
     }
@@ -154,10 +173,15 @@ export default function ResultSection({ appData }: ResultSectionProps) {
 
         {/* Misleading plays */}
         <MisleadingPlaysBlock tracks={combined.tracks} />
-
-        {/* Hidden share card */}
-        <ShareCard ref={shareCardRef} data={combined} period={period} />
       </div>
+
+      {/* Share card rendered off-screen via portal so the browser paints it fully */}
+      {createPortal(
+        <div style={{ position: 'fixed', left: -10000, top: 0, pointerEvents: 'none', zIndex: -1 }}>
+          <ShareCard ref={shareCardRef} data={combined} period={period} />
+        </div>,
+        document.body
+      )}
     </section>
   );
 }
